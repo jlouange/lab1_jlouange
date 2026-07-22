@@ -31,12 +31,16 @@ def load_csv_data():
         print(f"An error occurred while reading the file: {e}")
         sys.exit(1)
 
-def evaluate_grades(data):
+def evaluate_grades(data=[]):
     """
     Implement your logic here.
     'data' is a list of dictionaries containing the assignment records.
     """
     print("\n--- Processing Grades ---")
+
+    if not data:
+        print("CSV file is empty.")
+        return
     
     # TODO: a) Check if all scores are percentage based (0-100)
     for assignment in data:
@@ -46,6 +50,31 @@ def evaluate_grades(data):
     print()
        
     # TODO: b) Validate total weights (Total=100, Summative=40, Formative=60)
+    Total_weight = 0
+
+    for assignment in data:
+        Total_weight += assignment['weight']
+
+    if Total_weight != 100: 
+        print("Total weight must be 100 !") 
+        sys.exit(1)
+
+    formative_total = 0
+    summative_total = 0
+
+    for assignment  in data:
+        if assignment['group'] == 'Formative':
+            formative_total += assignment['weight']
+        if assignment['group'] == 'Summative':
+            summative_total += assignment['weight']
+
+    if formative_total != 60:
+        print(f"Error: Formative weight must be 60 ")
+        sys.exit(1)
+    elif summative_total != 40:
+        print(f"Error: Summative weight must be 40 ")
+        sys.exit(1)
+
     # TODO: c) Calculate the Final Grade and GPA
     # TODO: d) Determine Pass/Fail status (>= 50% in BOTH categories)
     # TODO: e) Check for failed formative assignments (< 50%)
