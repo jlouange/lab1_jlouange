@@ -3,14 +3,15 @@ Python application that calculates a student's final academic standing based on 
 
 # Lab 1 - Grade Evaluator & Archiver
 
-## Files
+## Project structure
 
-```
+```text
 lab1_jlouange/
 ├── grade-evaluator.py
 ├── organizer.sh
 └── README.md
 ```
+>**Note:** `grades.csv` must be provided and stored in the same directory as these project files.
 
 ## Requirements
 
