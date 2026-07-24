@@ -22,10 +22,19 @@ def load_csv_data():
     assignments = []
     
     try:
+        # Convert numeric fields to floats for calculations
         with open(filename, mode='r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
-                # Convert numeric fields to floats for calculations
+                if not all([
+                    row["assignment"].strip(),
+                    row["group"].strip(),
+                    row["score"].strip(),
+                    row["weight"].strip()
+                    ]):
+                    print("Error: CSV contains an empty or incomplete row.")
+                    sys.exit(1)
+
                 assignments.append({
                     'assignment': row['assignment'],
                     'group': row['group'],
@@ -34,7 +43,11 @@ def load_csv_data():
                 })
         return assignments
     except Exception as e:
+        print()
+        print("----------------------------------------------")
         print(f"An error occurred while reading the file: {e}")
+        print("please check the structure of the csv file.\n columns must be: \n assignment,group,score,weight")
+        print("----------------------------------------------")
         sys.exit(1)
 
 def evaluate_grades(data):
@@ -53,7 +66,11 @@ def evaluate_grades(data):
     # Check if all scores are percentage based (0-100)
     for assignment in data:
         if assignment["score"] < 0 or assignment["score"] > 100:
-            print("Score must be between 0 and 100")
+            print(
+                f"Invalid score ({assignment['score']}) "
+                f"for '{assignment['assignment']}'. "
+                "Scores must be between 0 and 100."
+            )
             print()
             sys.exit(1)
     print()
@@ -98,7 +115,7 @@ def evaluate_grades(data):
     print()
 
     GPA = (total_contribution / 100) * 5
-    print(f"The GPA is {GPA:.2f}")
+    print(f"The GPA is {GPA:.3f}")
     print()
 
     
@@ -137,7 +154,7 @@ def evaluate_grades(data):
     assignment_with_max_weight = []
     max_weight = 0
     if not assignment_failed:
-        print("There are zero lessons failed!")
+        print("No formative assignments require resubmission!")
 
     else:
 
