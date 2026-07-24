@@ -26,6 +26,9 @@ def load_csv_data():
         with open(filename, mode='r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
+                """
+                I tried to remove trailing spaces on header names.
+                """
                 if not all([
                     row["assignment"].strip(),
                     row["group"].strip(),
@@ -146,27 +149,46 @@ def evaluate_grades(data):
         print()
     # Check for failed formative assignments (< 50%)
     # and determine which one(s) have the highest weight for resubmission.
+
+    """
+    The logic i used here, is that i tried to make an empty dictionary which will store the assignment name and
+    its corresponding weight as we loop through the parameter we called 'data' which is list that holds every row in our
+    CSV file as dictionaries.
+    """
   
     assignment_failed = {}
     for assignment in data:
         if assignment['group'] == 'Formative' and assignment['score'] < 50:
             assignment_failed[assignment['assignment']] = assignment['weight']
-    assignment_with_max_weight = []
-    max_weight = 0
-    if not assignment_failed:
+
+    """I made an empty list called 'assignment_with_max_weight' which will hold the assignment with maximum weight as 
+    we loop over the assignment_failed dictionary we created above.
+    """
+
+    assignment_with_max_weight = [] 
+    max_weight = 0 #this will be updated as we loop over the assignment_failed dictionary
+
+    if not assignment_failed: # This if statement will check if assignment_failed dictionary is empty
         print("No formative assignments require resubmission!")
 
     else:
 
         for key, value in assignment_failed.items():
-            if not assignment_with_max_weight:
+            """On the first loop we check if list called 'assignment_with_max_weight' is empty,
+            if it is empty, we will append the first key in the dictionary we called 'assignment_failed'
+            where our key is the name of assignment with maximum weight."""
+            if not assignment_with_max_weight: 
                 assignment_with_max_weight.append(key)
                 max_weight = value
             else:
-                if value > max_weight:
-                    assignment_with_max_weight = [key]
-                    max_weight = value
-                elif value == max_weight:
+                if value > max_weight: # value is weight of the assignment in assignment_with_max_weight
+                    assignment_with_max_weight = [key] # Here we change the whole list because we want to have an assignment with maximum weight
+                    max_weight = value # we update the value of max_weight to value(current maximum weight)
+                elif value == max_weight: # 
+                    """ when current weight == max_weight, we append the key(assignment name) b
+                    ecause we are allowed to resubmit more than one assignment given the condition that 
+                    if the weights of the assignments are equal.
+                    """
                     assignment_with_max_weight.append(key)
     if assignment_with_max_weight:
         print("\nEligible for resubmission:")
